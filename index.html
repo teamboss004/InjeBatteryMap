@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>인제대학교 폐배터리 수거함 지도</title>
+
+<style>
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        font-family: Arial, "Noto Sans KR", sans-serif;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+
+#header {
+    padding: 20px 30px 16px 30px;
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    z-index: 10;
+}
+#header h1 {
+    margin: 0 0 6px 0;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1f2937;
+    letter-spacing: -0.5px;
+}
+#header p {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+#location-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+#location-buttons button {
+    padding: 9px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background-color: white;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#location-buttons button:hover {
+    background-color: #eff6ff;
+    border-color: #3b82f6;
+    color: #2563eb;
+}
+
+#location-buttons button:active {
+    transform: scale(0.97);
+}
+    #map {
+        width: 100%;
+        flex: 1;
+        min-height: 0;
+    }
+</style></head>
+
+<header id="header">
+    <h1>인제대학교 폐배터리 수거함 지도</h1>
+    <p>교내 폐배터리·폐건전지 수거 장소를 확인하세요.</p>
+    <div id="category-buttons">
+<button onclick="filterCategory('인제대학교 교내')">인제대학교 교내</button>
+<button onclick="filterCategory('어방동')">어방동</button>
+<button onclick="filterCategory('삼방동')">삼방동</button>
+<button onclick="filterCategory('김해시 전체')">김해시 전체</button></div>
+    <div id="location-buttons">
+    <button onclick="moveToLocation(0)">일강원</button>
+    <button onclick="moveToLocation(1)">늘빛관</button>
+    <button onclick="moveToLocation(2)">본관</button>
+    <button onclick="moveToLocation(3)">신어관</button>
+</div>
+</header>
+
+<div id="map"></div>
+
+    <!-- 카카오 지도 API -->
+    <script
+        src="//dapi.kakao.com/v2/maps/sdk.js?appkey=1d4e36fb56811a0d8961c60ea3c42734&libraries=services">
+    </script>
+
+    <script>
+        var mapContainer = document.getElementById('map');
+
+        var mapOption = {
+            center: new kakao.maps.LatLng(35.2493, 128.9030),
+            level: 3
+        };
+
+        var map = new kakao.maps.Map(mapContainer, mapOption);
+       // 폐배터리 수거함 위치 데이터
+var collectionPoints = [
+    {
+        id: 1,
+        name: "일강원",
+        location: "1층 승강기 옆 계단 아래",
+        lat: 35.24992377479449,
+        lng: 128.9029643450616,
+        category: "인제대학교 교내",
+        acceptedItems: "폐건전지",
+photos: [
+    "images/일강원1.jpg",
+    "images/일강원2.jpg"
+]   
+ },
+    {
+        id: 2,
+        name: "늘빛관",
+        location: "1층 다인식당 입구 앞 창문",
+        lat: 35.25047604899191,
+        lng: 128.90265866506002,
+        category: "인제대학교 교내",
+        acceptedItems: "폐건전지",
+// 늘빛관
+photos: [
+    "images/늘빛관1.jpg",
+    "images/늘빛관2.jpg"
+]    },
+    {
+        id: 3,
+        name: "본관",
+        location: "본관 후문",
+        lat: 35.2482463209012,
+        lng: 128.90261479184377,
+        category: "인제대학교 교내",
+        acceptedItems: "폐건전지",
+// 본관
+photos: [
+    "images/본관후문1.jpg",
+    "images/본관후문2.jpg"
+]  
+  },
+    {
+        id: 4,
+        name: "신어관",
+        location: "1층 입구 우측 게시판 옆",
+        lat: 35.249341309179854,
+        lng: 128.9031841759075,
+        category: "인제대학교 교내",
+        acceptedItems: "폐건전지",
+// 신어관
+photos: [
+    "images/신어관1.jpg",
+    "images/신어관2.jpg"
+]    }
+];
+
+// 현재 열려 있는 정보창
+var currentInfoWindow = null;
+var markers = [];
+var infoWindows = [];
+
+// 수거함 마커 생성
+collectionPoints.forEach(function(point) {
+
+    var position = new kakao.maps.LatLng(
+        point.lat,
+        point.lng
+    );
+
+    var marker = new kakao.maps.Marker({
+        map: map,
+        position: position
+    });
+
+    // 마커 클릭 시 표시되는 정보창
+var photoHtml = '';
+
+if (Array.isArray(point.photos) && point.photos.length > 0) {
+    photoHtml =
+        '<div style="display:flex;gap:6px;margin-top:8px;">' +
+        '<img src="' + point.photos[0] + '" style="width:110px;height:85px;object-fit:cover;border-radius:6px;">' +
+        '<img src="' + point.photos[1] + '" style="width:110px;height:85px;object-fit:cover;border-radius:6px;">' +
+        '</div>';
+}
+
+var infowindow = new kakao.maps.InfoWindow({
+    content:
+        '<div style="padding:12px;min-width:250px;line-height:1.6;">' +
+        '<strong style="font-size:16px;">' + point.name + '</strong><br>' +
+        '<span style="font-size:13px;">폐배터리 수거함</span><br>' +
+        '<span style="font-size:13px;"><strong>위치:</strong> ' +
+        point.location +
+        '</span><br>' +
+        '<span style="font-size:13px;"><strong>수거 품목:</strong> ' +
+        point.acceptedItems +
+        '</span>' +
+        photoHtml +
+        '</div>'
+});    infoWindows.push(infowindow);
+    markers.push(marker);
+
+    // 마커 클릭
+    kakao.maps.event.addListener(marker, 'click', function() {
+
+        // 같은 마커를 다시 클릭하면 닫기
+        if (currentInfoWindow === infowindow) {
+            infowindow.close();
+            currentInfoWindow = null;
+            return;
+        }
+
+        // 다른 정보창이 열려 있으면 닫기
+        if (currentInfoWindow) {
+            currentInfoWindow.close();
+        }
+
+        // 선택한 정보창 열기
+        infowindow.open(map, marker);
+        currentInfoWindow = infowindow;
+    });
+});
+
+// 지도 빈 곳을 클릭하면 정보창 닫기
+kakao.maps.event.addListener(map, 'click', function() {
+
+    if (currentInfoWindow) {
+        currentInfoWindow.close();
+        currentInfoWindow = null;
+    }
+});
+// 상단 건물 버튼 클릭 시 해당 수거함으로 이동
+function moveToLocation(index) {
+    var point = collectionPoints[index];
+    var marker = markers[index];
+
+    // 이미 선택된 수거함 버튼을 다시 누르면 정보창 닫기
+if (currentInfoWindow === infoWindows[index]) {
+    currentInfoWindow.close();
+    currentInfoWindow = null;
+    return;
+}
+
+    var movePosition = new kakao.maps.LatLng(
+        point.lat,
+        point.lng
+    );
+
+    // 해당 수거함 위치로 즉시 이동
+    map.setCenter(movePosition);
+
+    // 지도를 확대
+    map.setLevel(2);
+
+    // 기존 정보창이 열려 있으면 닫기
+    if (currentInfoWindow) {
+        currentInfoWindow.close();
+    }
+
+    // 선택한 마커의 정보창 직접 열기
+    infoWindows[index].open(map, marker);
+    currentInfoWindow = infoWindows[index];
+    currentInfoWindow = infoWindows[index];
+}
+
+
+// 지역별 수거함 필터
+function filterCategory(category) {
+
+    // 열려 있는 정보창 닫기
+    if (currentInfoWindow) {
+        currentInfoWindow.close();
+        currentInfoWindow = null;
+    }
+
+    collectionPoints.forEach(function(point, index) {
+
+        // 김해시 전체를 선택하면 모든 수거함 표시
+        if (category === '김해시 전체') {
+            markers[index].setMap(map);
+        }
+
+// 어방동 선택 시 인제대학교 교내 수거함도 함께 표시
+else if (
+    point.category === category ||
+    (category === '어방동' && point.category === '인제대학교 교내')
+) {
+    markers[index].setMap(map);
+}
+        else {
+            markers[index].setMap(null);
+        }
+
+    });
+} </script>
+
+</body>
+
+</html>
