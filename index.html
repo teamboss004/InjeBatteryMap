@@ -93,11 +93,10 @@
 <button onclick="filterCategory('삼방동')">삼방동</button>
 <button onclick="filterCategory('김해시 전체')">김해시 전체</button></div>
     <div id="location-buttons">
-    <button onclick="moveToLocation(0)">일강원</button>
-    <button onclick="moveToLocation(1)">늘빛관</button>
-    <button onclick="moveToLocation(2)">본관</button>
-    <button onclick="moveToLocation(3)">신어관</button>
-</div>
+<button data-category="인제대학교 교내" onclick="moveToLocation(0)">일강원</button>
+<button data-category="인제대학교 교내" onclick="moveToLocation(1)">늘빛관</button>
+<button data-category="인제대학교 교내" onclick="moveToLocation(2)">본관</button>
+<button data-category="인제대학교 교내" onclick="moveToLocation(3)">신어관</button></div>
 </header>
 
 <div id="map"></div>
@@ -310,6 +309,39 @@ else if (
         }
 
     });
+    // 지역에 따라 수거함 위치 버튼 표시/숨김
+var locationButtons = document.querySelectorAll('#location-buttons button');
+
+locationButtons.forEach(function(button) {
+    var buttonCategory = button.getAttribute('data-category');
+
+    if (
+        category === '김해시 전체' ||
+        buttonCategory === category ||
+        (category === '어방동' && buttonCategory === '인제대학교 교내')
+    ) {
+        button.style.display = '';
+    } else {
+        button.style.display = 'none';
+    }
+});
+// 선택한 지역으로 지도 이동
+if (category === '인제대학교 교내') {
+    map.setCenter(new kakao.maps.LatLng(35.2493, 128.9030));
+    map.setLevel(3);
+}
+else if (category === '어방동') {
+    map.setCenter(new kakao.maps.LatLng(35.2408, 128.9005));
+    map.setLevel(5);
+}
+else if (category === '삼방동') {
+    map.setCenter(new kakao.maps.LatLng(35.2480, 128.9105));
+    map.setLevel(5);
+}
+else if (category === '김해시 전체') {
+    map.setCenter(new kakao.maps.LatLng(35.2285, 128.8893));
+    map.setLevel(8);
+}
 } </script>
 
 </body>
