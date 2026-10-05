@@ -30,24 +30,26 @@
     }
 
 #header {
-    padding: 20px 30px 16px 30px;
-    background-color: white;
+    padding: 18px 30px 16px 30px;
+    background-color: #ffffff;
     border-bottom: 1px solid #e5e7eb;
     box-sizing: border-box;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     z-index: 10;
 }
 #header h1 {
-    margin: 0 0 6px 0;
+    margin: 0;
     font-size: 24px;
     font-weight: 700;
     color: #1f2937;
     letter-spacing: -0.5px;
+    line-height: 1.35;
 }
 #header p {
-    margin: 0;
+    margin: 6px 0 0 0;
     font-size: 14px;
     color: #6b7280;
+    line-height: 1.5;
 }
 #location-buttons {
     display: flex;
@@ -57,46 +59,153 @@
 }
 
 #location-buttons button {
-    padding: 9px 16px;
+    padding: 8px 14px;
     border: 1px solid #d1d5db;
     border-radius: 8px;
-    background-color: white;
+    background-color: #ffffff;
     color: #374151;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 #location-buttons button:hover {
-    background-color: #eff6ff;
-    border-color: #3b82f6;
-    color: #2563eb;
+    background-color: #f0fdf4;
+    border-color: #86efac;
+    color: #2e7d32;
 }
 
 #location-buttons button:active {
     transform: scale(0.97);
 }
-    #map {
-        width: 100%;
-        flex: 1;
-        min-height: 0;
+#map {
+    width: calc(100% - 32px);
+    flex: 1;
+    min-height: 0;
+
+    margin: 0 16px 16px 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    overflow: hidden;
+    box-sizing: border-box;
+}    /* 에코배터리 브랜드 */
+#brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 6px 12px;
+    background-color: #ecfdf3;
+    border: 1px solid #bbf7d0;
+    border-radius: 20px;
+}
+.brand-icon {
+    font-size: 20px;
+}
+
+.brand-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: #2e7d32;
+    letter-spacing: -0.3px;
+}
+    #category-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+#category-buttons button {
+    padding: 10px 18px;
+    border: 1px solid #d7ded8;
+    border-radius: 20px;
+    background-color: #f5f7f5;
+    color: #374151;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#category-buttons button:hover {
+    background-color: #e8f5e9;
+    border-color: #66a96b;
+    color: #2e7d32;
+}
+
+#category-buttons button:active {
+    transform: scale(0.97);
+}
+#category-buttons button.selected {
+    background-color: #2e7d32;
+    border-color: #2e7d32;
+    color: white;
+}
+/* 모바일 화면 최적화 */
+@media (max-width: 600px) {
+
+    #header {
+        padding: 14px 16px 12px 16px;
     }
+
+    #header h1 {
+        font-size: 20px;
+    }
+
+    #header p {
+        font-size: 13px;
+    }
+
+    #category-buttons {
+        gap: 6px;
+        margin-top: 14px;
+    }
+
+    #category-buttons button {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    #location-buttons {
+        gap: 6px;
+        margin-top: 10px;
+    }
+
+    #location-buttons button {
+        padding: 7px 11px;
+        font-size: 12px;
+    }
+
+    #map {
+        width: calc(100% - 20px);
+        margin: 0 10px 10px 10px;
+        border-radius: 10px;
+    }
+}
 </style></head>
 
 <header id="header">
-    <h1>인제대학교 폐배터리 수거함 지도</h1>
-    <p>교내 폐배터리·폐건전지 수거 장소를 확인하세요.</p>
+    <div id="brand">
+    <span class="brand-icon">♻</span>
+    <span class="brand-name">에코배터리</span>
+</div>
+    <h1>인제대학교·김해시 폐배터리·폐건전지 수거함 지도</h1>
+    <p>인제대학교와 김해시의 폐배터리·폐건전지 수거 장소를 확인하세요.</p>
     <div id="category-buttons">
 <button onclick="filterCategory('인제대학교 교내')">인제대학교 교내</button>
 <button onclick="filterCategory('어방동')">어방동</button>
 <button onclick="filterCategory('삼방동')">삼방동</button>
 <button onclick="filterCategory('김해시 전체')">김해시 전체</button></div>
-    <div id="location-buttons">
-<button data-category="인제대학교 교내" onclick="moveToLocation(0)">일강원</button>
-<button data-category="인제대학교 교내" onclick="moveToLocation(1)">늘빛관</button>
-<button data-category="인제대학교 교내" onclick="moveToLocation(2)">본관</button>
-<button data-category="인제대학교 교내" onclick="moveToLocation(3)">신어관</button></div>
+
+<div id="location-buttons">
+    <button style="display: none;" data-category="인제대학교 교내" onclick="moveToLocation(0)">📍 일강원</button>
+    <button style="display: none;" data-category="인제대학교 교내" onclick="moveToLocation(1)">📍 늘빛관</button>
+    <button style="display: none;" data-category="인제대학교 교내" onclick="moveToLocation(2)">📍 본관</button>
+    <button style="display: none;" data-category="인제대학교 교내" onclick="moveToLocation(3)">📍 신어관</button>
+
 </header>
 
 <div id="map"></div>
@@ -195,26 +304,29 @@ var photoHtml = '';
 
 if (Array.isArray(point.photos) && point.photos.length > 0) {
     photoHtml =
-        '<div style="display:flex;gap:6px;margin-top:8px;">' +
-        '<img src="' + point.photos[0] + '" style="width:110px;height:85px;object-fit:cover;border-radius:6px;">' +
-        '<img src="' + point.photos[1] + '" style="width:110px;height:85px;object-fit:cover;border-radius:6px;">' +
+        '<div style="display:flex;gap:6px;margin-top:10px;">' +
+        '<img src="' + point.photos[0] + '" style="width:105px;height:80px;object-fit:cover;border-radius:6px;">' +
+        '<img src="' + point.photos[1] + '" style="width:105px;height:80px;object-fit:cover;border-radius:6px;">' +
         '</div>';
 }
 
 var infowindow = new kakao.maps.InfoWindow({
     content:
-        '<div style="padding:12px;min-width:250px;line-height:1.6;">' +
-        '<strong style="font-size:16px;">' + point.name + '</strong><br>' +
-        '<span style="font-size:13px;">폐배터리 수거함</span><br>' +
-        '<span style="font-size:13px;"><strong>위치:</strong> ' +
-        point.location +
-        '</span><br>' +
-        '<span style="font-size:13px;"><strong>수거 품목:</strong> ' +
-        point.acceptedItems +
-        '</span>' +
-        photoHtml +
+        '<div style="padding:14px;width:230px;box-sizing:border-box;font-family:Arial,\'Noto Sans KR\',sans-serif;line-height:1.5;">' +
+            '<div style="font-size:17px;font-weight:700;color:#1f2937;margin-bottom:4px;">' +
+                point.name +
+            '</div>' +
+            '<div style="font-size:12px;color:#2e7d32;font-weight:600;margin-bottom:10px;">폐배터리·폐건전지 수거함</div>' +
+            '<div style="font-size:13px;color:#374151;margin-bottom:5px;">' +
+                '<strong>위치:</strong> ' + point.location +
+            '</div>' +
+            '<div style="font-size:13px;color:#374151;">' +
+                '<strong>수거 품목:</strong> ' + point.acceptedItems +
+            '</div>' +
+            photoHtml +
         '</div>'
-});    infoWindows.push(infowindow);
+});
+    infoWindows.push(infowindow);
     markers.push(marker);
 
     // 마커 클릭
@@ -284,7 +396,33 @@ if (currentInfoWindow === infoWindows[index]) {
 // 지역별 수거함 필터
 function filterCategory(category) {
 
-    // 열려 있는 정보창 닫기
+// 선택된 카테고리 버튼 강조 / 다시 클릭하면 선택 해제
+var categoryButtons = document.querySelectorAll('#category-buttons button');
+var clickedButton = null;
+var wasSelected = false;
+
+categoryButtons.forEach(function(button) {
+    if (button.textContent.trim() === category) {
+        clickedButton = button;
+        wasSelected = button.classList.contains('selected');
+    }
+
+    button.classList.remove('selected');
+});
+
+if (clickedButton && !wasSelected) {
+    clickedButton.classList.add('selected');
+}
+// 같은 카테고리를 다시 클릭해 선택 해제한 경우
+if (wasSelected) {
+    var locationButtons = document.querySelectorAll('#location-buttons button');
+
+    locationButtons.forEach(function(button) {
+        button.style.display = 'none';
+    });
+
+    return;
+}    // 열려 있는 정보창 닫기
     if (currentInfoWindow) {
         currentInfoWindow.close();
         currentInfoWindow = null;
