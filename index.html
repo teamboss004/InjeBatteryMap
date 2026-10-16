@@ -426,6 +426,7 @@
     <button style="display: none;" data-category="인제대학교 교내" onclick="moveToLocation(1)">📍 늘빛관</button>
     <button style="display: none;" data-category="인제대학교 교내" onclick="moveToLocation(2)">📍 본관</button>
     <button style="display: none;" data-category="인제대학교 교내" onclick="moveToLocation(3)">📍 신어관</button>
+    <button style="display: none;" data-category="인제대학교 교내" onclick="moveToLocation(4)">📍 장영실관(E동)</button>
 
 </header>
 
@@ -590,7 +591,19 @@ photos: [
 photos: [
     "images/신어관1.jpg",
     "images/신어관2.jpg"
-]    }
+]    },{
+    id: 5,
+    name: "장영실관(E동)",
+    location: "1층 종합상황실 앞",
+    lat: 35.24933759208128,
+    lng: 128.9024178352492,
+    category: "인제대학교 교내",
+    acceptedItems: "폐건전지",
+    photos: [
+        "images/장영실관1.jpg",
+        "images/장영실관2.jpg"
+    ]
+}
 ];
 
 // 현재 열려 있는 정보창
@@ -842,6 +855,15 @@ function toggleExchangeGuide() {
         guide.style.display = 'none';
     }
 }
+// 지도에서 마우스 오른쪽 클릭 시 좌표 확인
+kakao.maps.event.addListener(map, 'rightclick', function(mouseEvent) {
+    var latlng = mouseEvent.latLng;
+
+    alert(
+        '위도(lat): ' + latlng.getLat() +
+        '\n경도(lng): ' + latlng.getLng()
+    );
+});
 </script>
 
 </body>
