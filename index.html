@@ -419,6 +419,7 @@
 <button onclick="filterCategory('어방동')">어방동</button>
 <button onclick="filterCategory('삼방동')">삼방동</button>
 <button onclick="filterCategory('김해시 전체')">김해시 전체</button>
+<button onclick="filterCategory('삼계동')">삼계동</button>
 </div>
 
 <div id="location-buttons">
@@ -427,6 +428,7 @@
     <button style="display: none;" data-category="인제대학교 교내" onclick="moveToLocation(2)">📍 본관</button>
     <button style="display: none;" data-category="인제대학교 교내" onclick="moveToLocation(3)">📍 신어관</button>
     <button style="display: none;" data-category="인제대학교 교내" onclick="moveToLocation(4)">📍 장영실관(E동)</button>
+    <button style="display: none;" data-category="삼계동" onclick="moveToLocation(5)"> 📍 가야대학교</button>
 
 </header>
 
@@ -603,6 +605,18 @@ photos: [
         "images/장영실관1.jpg",
         "images/장영실관2.jpg"
     ]
+},
+{
+    id: 6,
+    name: "가야대학교",
+    location: "1층 중앙 승강기 옆",
+    lat: 35.26984564752128,
+    lng: 128.87242066707668,
+    category: "삼계동",
+    acceptedItems: "폐건전지",
+    photos: [
+        "images/가야대1.jpg"
+    ]
 }
 ];
 
@@ -628,12 +642,17 @@ collectionPoints.forEach(function(point) {
 var photoHtml = '';
 
 if (Array.isArray(point.photos) && point.photos.length > 0) {
-    photoHtml =
-        '<div style="display:flex;gap:6px;margin-top:10px;">' +
-        '<img src="' + point.photos[0] + '" style="width:105px;height:80px;object-fit:cover;border-radius:6px;">' +
-        '<img src="' + point.photos[1] + '" style="width:105px;height:80px;object-fit:cover;border-radius:6px;">' +
-        '</div>';
+    photoHtml = '<div style="display:flex;gap:6px;margin-top:10px;">';
+
+    point.photos.forEach(function(photo) {
+        photoHtml +=
+            '<img src="' + photo +
+            '" style="width:105px;height:80px;object-fit:cover;border-radius:6px;">';
+    });
+
+    photoHtml += '</div>';
 }
+
 
 var infowindow = new kakao.maps.InfoWindow({
     content:
@@ -800,6 +819,10 @@ else if (category === '어방동') {
 else if (category === '삼방동') {
     map.setCenter(new kakao.maps.LatLng(35.2480, 128.9105));
     map.setLevel(5);
+}
+else if (category === '삼계동') {
+    map.setCenter(new kakao.maps.LatLng(35.26984564752128, 128.87242066707668));
+    map.setLevel(4);
 }
 else if (category === '김해시 전체') {
     map.setCenter(new kakao.maps.LatLng(35.2285, 128.8893));
